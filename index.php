@@ -19,6 +19,7 @@
             --hospital-accent: #94d2bd;
             --hospital-light: #e9d8a6;
             --hospital-alert: #ee9b00;
+            --hospital-dark: #001219;
         }
         
         body {
@@ -223,6 +224,21 @@
                 font-size: 2.5rem;
             }
         }
+        
+        /* Spinner para carga de datos */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--hospital-primary);
+            animation: spin 1s ease-in-out infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -363,7 +379,10 @@
             </div>
             
             <div class="row" id="testimonials-container">
-                <!-- Testimonials will be loaded via API -->
+                <div class="col-12 text-center">
+                    <div class="spinner"></div>
+                    <p>Cargando testimonios...</p>
+                </div>
             </div>
         </div>
     </section>
@@ -416,10 +435,11 @@
                 <div class="col-lg-3 mb-4">
                     <h5 class="mb-4">Newsletter</h5>
                     <p>Suscríbete para recibir actualizaciones y noticias.</p>
-                    <form class="newsletter-form mt-3">
+                    <form id="newsletterForm" class="newsletter-form mt-3">
                         <input type="email" class="form-control" placeholder="Tu email" required>
                         <button type="submit"><i class="fas fa-paper-plane"></i></button>
                     </form>
+                    <div id="newsletterMessage" class="mt-2 small"></div>
                 </div>
             </div>
             <hr class="mt-4 mb-4" style="border-color: rgba(255,255,255,0.1)">
@@ -442,6 +462,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
+        // API Endpoints
+        const API_URLS = {
+            pacientes: 'https://jsonplaceholder.typicode.com/users',
+            medicos: 'https://jsonplaceholder.typicode.com/users',
+            citas: 'https://jsonplaceholder.typicode.com/todos',
+            testimonios: 'https://randomuser.me/api/?results=3',
+            newsletter: 'https://api.example.com/newsletter' // Reemplazar con tu endpoint real
+        };
+        
         // Counter Animation
         function animateCounters() {
             const counters = document.querySelectorAll('.stat-number');
@@ -461,72 +490,120 @@
             });
         }
         
-        // Fetch stats from API
-        function fetchStats() {
-            // This would be your actual API endpoint
-            // axios.get('https://api.hospitalxyz.com/stats')
-            // For demo purposes, we'll use mock data
-            const mockStats = {
-                pacientes: 12500,
-                medicos: 320,
-                citas: 2850,
-                satisfaccion: 98
-            };
-            
-            document.getElementById('pacientes-count').setAttribute('data-target', mockStats.pacientes);
-            document.getElementById('medicos-count').setAttribute('data-target', mockStats.medicos);
-            document.getElementById('citas-count').setAttribute('data-target', mockStats.citas);
-            document.getElementById('satisfaccion-count').setAttribute('data-target', mockStats.satisfaccion);
-            
-            animateCounters();
+        // Fetch stats from APIs
+        async function fetchStats() {
+            try {
+                // Obtener datos de pacientes (simulados desde JSONPlaceholder)
+                const pacientesResponse = await axios.get(API_URLS.pacientes);
+                const pacientesCount = pacientesResponse.data.length * 1250; // Multiplicamos para simular números reales
+                
+                // Obtener datos de médicos (simulados desde JSONPlaceholder)
+                const medicosResponse = await axios.get(API_URLS.medicos);
+                const medicosCount = medicosResponse.data.length * 80;
+                
+                // Obtener datos de citas (simulados desde JSONPlaceholder)
+                const citasResponse = await axios.get(API_URLS.citas);
+                const citasCount = citasResponse.data.length * 15;
+                
+                // Satisfacción es un valor fijo para el ejemplo
+                const satisfaccionCount = 98;
+                
+                // Actualizar los elementos del DOM
+                document.getElementById('pacientes-count').setAttribute('data-target', pacientesCount);
+                document.getElementById('medicos-count').setAttribute('data-target', medicosCount);
+                document.getElementById('citas-count').setAttribute('data-target', citasCount);
+                document.getElementById('satisfaccion-count').setAttribute('data-target', satisfaccionCount);
+                
+                // Iniciar animación de contadores
+                animateCounters();
+            } catch (error) {
+                console.error('Error al cargar estadísticas:', error);
+                // Mostrar valores por defecto en caso de error
+                document.getElementById('pacientes-count').textContent = '10,000+';
+                document.getElementById('medicos-count').textContent = '250+';
+                document.getElementById('citas-count').textContent = '2,500+';
+                document.getElementById('satisfaccion-count').textContent = '98%';
+            }
         }
         
         // Fetch testimonials from API
-        function fetchTestimonials() {
-            // This would be your actual API endpoint
-            // axios.get('https://api.hospitalxyz.com/testimonials')
-            // For demo purposes, we'll use mock data
-            const mockTestimonials = [
-                {
-                    name: "Dra. María González",
-                    role: "Cardióloga",
-                    text: "El sistema ha transformado completamente nuestra forma de trabajar. Ahora podemos acceder a historiales médicos en segundos.",
-                    img: "https://randomuser.me/api/portraits/women/65.jpg"
-                },
-                {
-                    name: "Dr. Javier Rodríguez",
-                    role: "Pediatra",
-                    text: "La gestión de citas es increíblemente eficiente. Mis pacientes están más satisfechos y mi consulta más organizada.",
-                    img: "https://randomuser.me/api/portraits/men/32.jpg"
-                },
-                {
-                    name: "Lic. Ana Martínez",
-                    role: "Administradora",
-                    text: "Los reportes automatizados nos han ahorrado cientos de horas de trabajo manual. Una herramienta imprescindible.",
-                    img: "https://randomuser.me/api/portraits/women/44.jpg"
-                }
-            ];
-            
+        async function fetchTestimonials() {
             const container = document.getElementById('testimonials-container');
-            container.innerHTML = '';
             
-            mockTestimonials.forEach(testimonial => {
-                const col = document.createElement('div');
-                col.className = 'col-md-4';
-                col.innerHTML = `
-                    <div class="testimonial-card">
-                        <img src="${testimonial.img}" alt="${testimonial.name}" class="testimonial-img">
-                        <p class="mb-4">"${testimonial.text}"</p>
-                        <h5>${testimonial.name}</h5>
-                        <small class="text-muted">${testimonial.role}</small>
+            try {
+                // Obtener testimonios simulados (usamos randomuser.me para fotos y nombres)
+                const response = await axios.get(API_URLS.testimonios);
+                const testimonials = response.data.results;
+                
+                // Textos de testimonios predefinidos
+                const testimonialTexts = [
+                    "El sistema ha transformado completamente nuestra forma de trabajar. Ahora podemos acceder a historiales médicos en segundos.",
+                    "La gestión de citas es increíblemente eficiente. Mis pacientes están más satisfechos y mi consulta más organizada.",
+                    "Los reportes automatizados nos han ahorrado cientos de horas de trabajo manual. Una herramienta imprescindible."
+                ];
+                
+                // Limpiar el contenedor
+                container.innerHTML = '';
+                
+                // Crear tarjetas de testimonios
+                testimonials.forEach((user, index) => {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-4';
+                    col.innerHTML = `
+                        <div class="testimonial-card animate__animated animate__fadeIn">
+                            <img src="${user.picture.large}" alt="${user.name.first}" class="testimonial-img">
+                            <p class="mb-4">"${testimonialTexts[index] || testimonialTexts[0]}"</p>
+                            <h5>${user.name.title} ${user.name.first} ${user.name.last}</h5>
+                            <small class="text-muted">${['Cardiólogo', 'Pediatra', 'Administrador'][index] || 'Médico'}</small>
+                        </div>
+                    `;
+                    container.appendChild(col);
+                });
+            } catch (error) {
+                console.error('Error al cargar testimonios:', error);
+                container.innerHTML = `
+                    <div class="col-12 text-center">
+                        <p class="text-danger">No se pudieron cargar los testimonios. Por favor intenta más tarde.</p>
                     </div>
                 `;
-                container.appendChild(col);
-            });
+            }
+        }
+        
+        // Handle newsletter form submission
+        async function handleNewsletterSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const emailInput = form.querySelector('input');
+            const messageDiv = document.getElementById('newsletterMessage');
+            
+            try {
+                // Mostrar estado de carga
+                messageDiv.textContent = 'Enviando...';
+                messageDiv.style.color = 'inherit';
+                
+                // En una implementación real, aquí harías la llamada a tu API:
+                // const response = await axios.post(API_URLS.newsletter, { email: emailInput.value });
+                
+                // Simulamos una respuesta exitosa
+                setTimeout(() => {
+                    messageDiv.textContent = '¡Gracias por suscribirte! Te enviaremos las últimas novedades.';
+                    messageDiv.style.color = 'var(--hospital-accent)';
+                    emailInput.value = '';
+                    
+                    // Resetear mensaje después de 5 segundos
+                    setTimeout(() => {
+                        messageDiv.textContent = '';
+                    }, 5000);
+                }, 1000);
+            } catch (error) {
+                messageDiv.textContent = 'Error al enviar. Por favor intenta nuevamente.';
+                messageDiv.style.color = 'var(--hospital-danger)';
+            }
         }
         
         // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
+            // Cargar datos
             fetchStats();
             fetchTestimonials();
             
@@ -541,16 +618,9 @@
             });
             
             // Newsletter form submission
-            const newsletterForm = document.querySelector('.newsletter-form');
+            const newsletterForm = document.getElementById('newsletterForm');
             if(newsletterForm) {
-                newsletterForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const email = this.querySelector('input').value;
-                    // Here you would send the email to your API
-                    // axios.post('/api/newsletter', { email })
-                    alert(`Gracias por suscribirte con ${email}. Te mantendremos informado.`);
-                    this.querySelector('input').value = '';
-                });
+                newsletterForm.addEventListener('submit', handleNewsletterSubmit);
             }
         });
     </script>
