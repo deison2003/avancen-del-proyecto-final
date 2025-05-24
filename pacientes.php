@@ -23,7 +23,7 @@ $total_pages = ceil($total_rows / $records_per_page);
             <h2 class="page-title"><i class="fas fa-user-injured me-2"></i>Gestión de Pacientes</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.php">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="dashboard.php">Inicio</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Pacientes</li>
                 </ol>
             </nav>

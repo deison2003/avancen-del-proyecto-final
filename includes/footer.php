@@ -18,7 +18,7 @@
             <div class="col-lg-2 col-md-4">
                 <h4 class="footer-title">Enlaces Rápidos</h4>
                 <ul class="footer-links">
-                    <li><a href="index.php"><i class="fas fa-chevron-right me-2"></i> Inicio</a></li>
+                    <li><a href="dashboard.php"><i class="fas fa-chevron-right me-2"></i> Inicio</a></li>
                     <li><a href="pacientes.php"><i class="fas fa-chevron-right me-2"></i> Pacientes</a></li>
                     <li><a href="medicos.php"><i class="fas fa-chevron-right me-2"></i> Médicos</a></li>
                     <li><a href="citas.php"><i class="fas fa-chevron-right me-2"></i> Citas</a></li>

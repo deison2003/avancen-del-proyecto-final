@@ -239,7 +239,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-hospital fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="index.php">
+            <a class="navbar-brand" href="dashboard.php">
                 <i class="fas fa-hospital"></i>
                 HOSPITAL<span>XYZ</span>
             </a>
@@ -284,7 +284,7 @@
             <div class="collapse navbar-collapse order-lg-2" id="navbarContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php" id="nav-inicio">
+                        <a class="nav-link" href="dashboard.php" id="nav-inicio">
                             <i class="fas fa-home"></i> Inicio
                         </a>
                     </li>
@@ -346,7 +346,7 @@
             
             // Mapeo de páginas a sus IDs de navegación
             const pageMap = {
-                'index.php': 'nav-inicio',
+                'dashboard.php': 'nav-inicio',
                 'pacientes.php': 'nav-pacientes',
                 'medicos.php': 'nav-medicos',
                 'citas.php': 'nav-citas',

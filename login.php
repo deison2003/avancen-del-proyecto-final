@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt2->close();
             $_SESSION['usuario'] = $correo;
             $_SESSION['rol'] = $rol;
-            header('Location: index.php');
+            header('Location: dashboard.php');
             exit;
         } else {
             // Login incorrecto: aumentar intentos y guardar IP
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label class="form-label">Contraseña</label>
                 <input type="password" name="clave" class="form-control" required>
             </div>
-            <button href="index.php" type="submit" class="btn btn-primary w-100">Entrar</button>
+            <button href="dashboard.php" type="submit" class="btn btn-primary w-100">Entrar</button>
         </form>
         <div class="mt-3 text-center">
             <a href="registro.php">¿No tienes cuenta? Regístrate aquí</a>
